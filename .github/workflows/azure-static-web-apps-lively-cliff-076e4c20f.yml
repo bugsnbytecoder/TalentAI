@@ -2,84 +2,36 @@ name: Azure Static Web Apps CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened, closed]
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    permissions:
-      contents: read
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           submodules: true
           lfs: false
-
-      - name: Mark repo as safe
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'yarn'
-
-      - name: Ensure Yarn cache dir exists
-        run: mkdir -p .yarn/cache
-
-      - name: Cache Yarn (Berry) packages
-        uses: actions/cache@v4
-        with:
-          path: .yarn/cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Cache Yarn install state
-        uses: actions/cache@v4
-        with:
-          path: |
-            .yarn/install-state.gz
-            .pnp.*
-          key: ${{ runner.os }}-yarn-install-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-install-
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Ensure .next/cache exists
-        run: mkdir -p .next/cache
-
-      - name: Cache Next.js build cache
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/*.{ts,tsx,js,jsx}', 'next.config.*') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-
-
-      - name: Build the project
-        run: yarn build
-        # Ensure your build produces a static export into ./out
-        # (e.g., Next.js with `output: 'export'` or running `next export` inside your build script)
-
-      - name: Deploy to Azure Static Web Apps
+      - name: Build And Deploy
+        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_CLIFF_076E4C20F }}
-          action: upload
-          app_location: "/"
-          output_location: "out"
-          production_branch: "main"
-          skip_app_build: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "out" # App source code path
+          api_location: "" # Api source code path - optional
+          output_location: "build" # Built app content directory - optional
+          ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -87,7 +39,8 @@ jobs:
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
+        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_CLIFF_076E4C20F }}
-          action: close
+          action: "close"
