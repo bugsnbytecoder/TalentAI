@@ -92,7 +92,7 @@ python manage.py runserver
 - **Recruiter dashboard updates** → Ranked candidates ready for outreach.
 
 ### 4️⃣ Demo Video
-🎥 Coming soon – 60-sec product walkthrough (Under Development)
+🎥 Live demo: https://lively-cliff-076e4c20f.2.azurestaticapps.net/
 
 ### 5️⃣ License
 This project is for Global AI Hackathon and is open-sourced under the MIT License. 
