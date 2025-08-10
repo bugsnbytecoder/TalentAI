@@ -1,0 +1,13 @@
+/* Document Preview Styles - Minimal styling only */
+
+/* Basic container styling */
+.docx-preview-container {
+  min-height: 100%;
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 768px) {
+  .docx-preview-container {
+    padding: 8px;
+  }
+}

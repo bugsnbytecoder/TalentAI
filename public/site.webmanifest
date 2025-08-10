@@ -1,0 +1,14 @@
+{
+  "name": "TalentAI",
+  "short_name": "TalentAI",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "theme_color": "#0f0f0f",
+  "background_color": "#000000",
+  "display": "standalone"
+}
